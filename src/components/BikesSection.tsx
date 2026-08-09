@@ -10,21 +10,21 @@ export const BikesSection: React.FC<BikesSectionProps> = ({ onBookBike }) => {
     {
       name: 'Hero Splendor Plus',
       category: '100cc Commuter King',
-      img: '/images/splendor_2018.png',
+      img: './images/splendor_2018.png',
       popularService: 'General Service, Carburetor Clean, Chain Lube, Brake Pads',
       desc: 'Amalapuram’s most popular daily commuter bike. We specialize in maintaining peak 65+ kmpl mileage, smooth clutch operation, and original APDV engine tuning.'
     },
     {
       name: 'Hero Glamour',
       category: '125cc Executive Commuter',
-      img: '/images/glamour_2018.png',
+      img: './images/glamour_2018.png',
       popularService: 'Engine Oil Flush, i3S Sensor Diagnostics, Clutch Plates',
       desc: 'Known for style and power. Our master technicians provide expert valve clearance shimming, fork seal replacement, and genuine Hero OEM spare replacements.'
     },
     {
       name: 'Honda Shine & Activa 6G / 5G',
       category: '125cc Bike & Scooter',
-      img: '/images/activa_scooter.png',
+      img: './images/activa_scooter.png',
       popularService: 'Variator Belt Wash, Spark Plug Clean, Hydraulic Brake Bleeding',
       desc: 'Smooth HET engine maintenance, synthetic 10W-30 engine oil swap, and front shock absorber bush replacement for vibration-free riding.'
     }
