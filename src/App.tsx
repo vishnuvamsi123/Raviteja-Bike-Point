@@ -15,35 +15,6 @@ import { BookingModal } from './components/BookingModal';
 import { OwnerDashboardModal, BookingNotification } from './components/OwnerDashboardModal';
 import { requestNotificationPermission, sendMobilePushNotification } from './utils/notificationService';
 
-const INITIAL_NOTIFICATIONS: BookingNotification[] = [
-  {
-    id: 'b-101',
-    name: 'K. Venkateswara Rao',
-    phone: '9848012345',
-    bikeModel: 'Hero Splendor Plus',
-    serviceType: 'General Service & Mileage Tuning',
-    preferredDate: 'Today',
-    preferredTime: '10:00 AM',
-    notes: 'Please check carburetor & clutch cable adjustment.',
-    status: 'Pending',
-    createdAt: '10 mins ago',
-    type: 'Booking'
-  },
-  {
-    id: 'b-102',
-    name: 'Suresh Kumar',
-    phone: '9440156789',
-    bikeModel: 'Hero Glamour',
-    serviceType: 'Engine Oil & Fork Seal Replacement',
-    preferredDate: 'Tomorrow',
-    preferredTime: '02:00 PM',
-    notes: 'Front shock absorbers leaking oil.',
-    status: 'Confirmed',
-    createdAt: '1 hour ago',
-    type: 'Booking'
-  }
-];
-
 export const App: React.FC = () => {
   const [isBookingOpen, setIsBookingOpen] = useState<boolean>(false);
   const [isOwnerDashboardOpen, setIsOwnerDashboardOpen] = useState<boolean>(false);
@@ -54,13 +25,18 @@ export const App: React.FC = () => {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [hasNotificationPermission, setHasNotificationPermission] = useState<boolean>(false);
 
-  // Load / Store Notifications in LocalStorage
+  // Load / Store Notifications in LocalStorage (Zero fake notifications - starts empty)
   const [notifications, setNotifications] = useState<BookingNotification[]>(() => {
     try {
       const saved = localStorage.getItem('raviteja_owner_notifications');
-      return saved ? JSON.parse(saved) : INITIAL_NOTIFICATIONS;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Filter out any old mock entries if present
+        return Array.isArray(parsed) ? parsed.filter(n => !n.id.startsWith('b-10')) : [];
+      }
+      return [];
     } catch (e) {
-      return INITIAL_NOTIFICATIONS;
+      return [];
     }
   });
 
@@ -83,7 +59,7 @@ export const App: React.FC = () => {
     if (granted) {
       sendMobilePushNotification(
         'Raviteja Bike Point Notifications Active! 🔔',
-        'Live service booking & estimate notifications are now enabled on your mobile device.'
+        'Live customer service booking alerts are now enabled on your mobile device.'
       );
     } else {
       alert('Mobile Notification permission was not granted. Please enable notifications in your browser settings.');
@@ -93,7 +69,7 @@ export const App: React.FC = () => {
   const handleAddNotification = (newNotif: BookingNotification) => {
     setNotifications((prev) => [newNotif, ...prev]);
 
-    // Send native system mobile push notification
+    // Send native system mobile push notification for REAL customer bookings only
     sendMobilePushNotification(
       `New Booking: ${newNotif.name}`,
       `${newNotif.bikeModel} - ${newNotif.serviceType}. Contact: ${newNotif.phone}`
@@ -129,6 +105,9 @@ export const App: React.FC = () => {
 
   const handleClearAll = () => {
     setNotifications([]);
+    try {
+      localStorage.removeItem('raviteja_owner_notifications');
+    } catch (e) {}
   };
 
   const handleOpenBooking = () => {
