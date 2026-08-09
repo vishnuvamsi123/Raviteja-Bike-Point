@@ -25,14 +25,15 @@ export const App: React.FC = () => {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [hasNotificationPermission, setHasNotificationPermission] = useState<boolean>(false);
 
-  // Load / Store Notifications in LocalStorage (Zero fake notifications - starts empty)
+  // Load / Store Notifications in LocalStorage safely
   const [notifications, setNotifications] = useState<BookingNotification[]>(() => {
     try {
       const saved = localStorage.getItem('raviteja_owner_notifications');
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Filter out any old mock entries if present
-        return Array.isArray(parsed) ? parsed.filter(n => !n.id.startsWith('b-10')) : [];
+        return Array.isArray(parsed)
+          ? parsed.filter(n => n && typeof n === 'object' && typeof n.id === 'string' && !n.id.startsWith('b-10'))
+          : [];
       }
       return [];
     } catch (e) {
@@ -47,22 +48,28 @@ export const App: React.FC = () => {
   }, [notifications]);
 
   useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'granted') {
-      setHasNotificationPermission(true);
-    }
+    try {
+      if ('Notification' in window && window.Notification && Notification.permission === 'granted') {
+        setHasNotificationPermission(true);
+      }
+    } catch (e) {}
   }, []);
 
   const handleRequestMobilePush = async () => {
-    const granted = await requestNotificationPermission();
-    setHasNotificationPermission(granted);
+    try {
+      const granted = await requestNotificationPermission();
+      setHasNotificationPermission(granted);
 
-    if (granted) {
-      sendMobilePushNotification(
-        'Raviteja Bike Point Notifications Active! 🔔',
-        'Live customer service booking alerts are now enabled on your mobile device.'
-      );
-    } else {
-      alert('Mobile Notification permission was not granted. Please enable notifications in your browser settings.');
+      if (granted) {
+        sendMobilePushNotification(
+          'Raviteja Bike Point Notifications Active! 🔔',
+          'Live customer service booking alerts are now enabled on your mobile device.'
+        );
+      } else {
+        alert('Mobile Notification permission was not granted. Please enable notifications in your browser settings.');
+      }
+    } catch (e) {
+      alert('Notifications are not supported on this browser context.');
     }
   };
 
@@ -70,25 +77,30 @@ export const App: React.FC = () => {
     setNotifications((prev) => [newNotif, ...prev]);
 
     // Send native system mobile push notification for REAL customer bookings only
-    sendMobilePushNotification(
-      `New Booking: ${newNotif.name}`,
-      `${newNotif.bikeModel} - ${newNotif.serviceType}. Contact: ${newNotif.phone}`
-    );
+    try {
+      sendMobilePushNotification(
+        `New Booking: ${newNotif.name}`,
+        `${newNotif.bikeModel} - ${newNotif.serviceType}. Contact: ${newNotif.phone}`
+      );
+    } catch (e) {}
 
     // Audio chime
     if (soundEnabled) {
       try {
-        const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        gain.gain.setValueAtTime(0.1, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.3);
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioCtx) {
+          const ctx = new AudioCtx();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, ctx.currentTime);
+          gain.gain.setValueAtTime(0.1, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.3);
+        }
       } catch (e) {}
     }
   };
@@ -133,7 +145,7 @@ export const App: React.FC = () => {
     setIsBookingOpen(true);
   };
 
-  const unreadCount = notifications.filter((n) => n.status === 'Pending').length;
+  const unreadCount = notifications.filter((n) => n && n.status === 'Pending').length;
 
   return (
     <div className="min-h-screen relative bg-[#0A0203] text-white selection:bg-[#D4AF37] selection:text-black">
