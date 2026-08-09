@@ -2,6 +2,10 @@
 <html lang="en" class="dark scroll-smooth">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
   <link rel="icon" type="image/jpeg" href="images/logo.jpg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -49,6 +53,22 @@
 </head>
 <body class="bg-[#0D0204] text-white font-sans antialiased overflow-x-hidden selection:bg-[#D4AF37] selection:text-black">
   <div id="root"></div>
+
+  <!-- Main Application Script -->
   <script type="module" src="/src/main.tsx"></script>
+
+  <!-- Fail-Safe Cache Bypass & Auto-Recovery Script for GitHub Pages -->
+  <script>
+    setTimeout(function() {
+      var root = document.getElementById('root');
+      if (!root || !root.hasChildNodes()) {
+        console.warn('React root empty due to browser cache, forcing fresh reload...');
+        if (!window.location.search.includes('v=')) {
+          var sep = window.location.search ? '&' : '?';
+          window.location.href = window.location.href + sep + 'v=' + Date.now();
+        }
+      }
+    }, 2500);
+  </script>
 </body>
 </html>
