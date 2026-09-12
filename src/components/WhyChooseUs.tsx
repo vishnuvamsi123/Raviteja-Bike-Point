@@ -1,96 +1,92 @@
 import React from 'react';
-import { Award, Users, CheckCircle2, ShieldCheck, Zap, DollarSign, Cpu, ThumbsUp, Sparkles } from 'lucide-react';
+import { Award, ShieldCheck, DollarSign, Wrench, PackageCheck, HeartHandshake } from 'lucide-react';
 
 export const WhyChooseUs: React.FC = () => {
   const pillars = [
     {
+      title: '26+ YEARS EXPERIENCE',
       icon: Award,
-      title: '26+ Years Experience',
-      desc: 'Over two decades of hands-on expertise servicing bikes across Amalapuram since 1992.',
-      color: 'text-[#0EA5E9]'
+      subtitle: 'SINCE 1992 IN AMALAPURAM',
+      description: 'Master craftsmanship established by Mallula Satyanarayana, solving complex engine, electrical, and suspension challenges with precision.'
     },
     {
-      icon: Users,
-      title: 'Certified Master Mechanics',
-      desc: 'Trained technicians with deep expertise in multi-brand EFI, carburetors, and gearboxes.',
-      color: 'text-[#F97316]'
+      title: 'EXPERIENCED SERVICE',
+      icon: Wrench,
+      subtitle: 'MULTI-BRAND MASTERY',
+      description: 'Specialized diagnostic servicing for Hero Splendor, Hero Glamour, Honda Shine, Activa 6G/5G, TVS Jupiter, and all Indian motorcycles.'
     },
     {
+      title: 'HONEST PRICING',
       icon: DollarSign,
-      title: 'Affordable & Honest Pricing',
-      desc: 'No hidden charges or padded bills. Itemized quotation before starting any job.',
-      color: 'text-emerald-400'
+      subtitle: 'TRANSPARENT ESTIMATES',
+      description: 'No hidden labor fees or unnecessary part replacements. We provide clear, itemized quotes before starting any work.'
     },
     {
+      title: 'RELIABLE WORK',
       icon: ShieldCheck,
-      title: '100% Original Spare Parts',
-      desc: 'Only genuine OEM parts from Hero, Honda, TVS, RE, Yamaha, and Bajaj.',
-      color: 'text-[#22D3EE]'
+      subtitle: 'ROAD-TESTED QUALITY',
+      description: 'Every serviced bike undergoes a rigorous 32-point checklist inspection and road testing before being handed back to the owner.'
     },
     {
-      icon: Zap,
-      title: 'Fast Same-Day Turnaround',
-      desc: 'Most routine services completed within 2 to 4 hours so you are never left stranded.',
-      color: 'text-amber-400'
+      title: 'QUALITY PARTS',
+      icon: PackageCheck,
+      subtitle: '100% GENUINE OEM',
+      description: 'We install only authentic manufacturer spare parts, high-grade synthetic lubricants, and heavy-duty seals for long durability.'
     },
     {
-      icon: ThumbsUp,
-      title: 'Customer Satisfaction First',
-      desc: 'Our long-standing local reputation is built on trust, honesty, and friendly service.',
-      color: 'text-pink-400'
-    },
-    {
-      icon: Cpu,
-      title: 'Modern Diagnostic Tools',
-      desc: 'Advanced electrical continuity scanners, hydraulic lifts, and torque tools.',
-      color: 'text-violet-400'
-    },
-    {
-      icon: CheckCircle2,
-      title: 'Quality & Service Guarantee',
-      desc: 'Free follow-up inspection and 30-day warranty on major repair jobs.',
-      color: 'text-cyan-400'
+      title: 'CUSTOMER TRUST',
+      icon: HeartHandshake,
+      subtitle: 'GENERATIONAL REPUTATION',
+      description: 'Trusted by over 10,000+ motorcycle owners across Amalapuram Rural, built on honesty, prompt delivery, and long-term customer care.'
     }
   ];
 
   return (
-    <section id="why-us" className="py-24 relative overflow-hidden bg-[#050816]">
+    <section id="why-us" className="py-24 relative bg-[#0D0204] border-b border-[#D4AF37]/20 text-white overflow-hidden">
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full badge-glow mb-4">
-            <Sparkles className="w-4 h-4 text-[#0EA5E9]" />
-            <span className="text-xs uppercase tracking-widest font-mono font-bold text-[#0EA5E9]">
-              THE RAVITEJA ADVANTAGE
-            </span>
+        <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[#8B0000]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-mono font-bold tracking-widest uppercase">
+            <Award className="w-3.5 h-3.5" />
+            <span>THE RAVITEJA ADVANTAGE</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold font-outfit text-white tracking-tight">
-            Why Riders In Amalapuram <span className="text-gradient">Trust Us</span>
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif-title font-black text-white uppercase tracking-tight">
+            WHY RIDER FAMILIES TRUST <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F5D77A] via-[#D4AF37] to-[#B8860B]">RAVITEJA BIKE POINT</span>
           </h2>
-          <p className="mt-4 text-gray-400 text-base">
-            We treat every bike like our own. Here is why generations of families continue to bring their two-wheelers to our garage.
+
+          <p className="text-base text-gray-300 font-sans leading-relaxed">
+            Combining traditional Indian business ethics with high-performance automotive precision.
           </p>
         </div>
 
-        {/* Pillars Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {pillars.map((item, idx) => {
-            const Icon = item.icon;
+        {/* 6 Pillars Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {pillars.map((pillar, idx) => {
+            const IconComp = pillar.icon;
             return (
               <div
                 key={idx}
-                className="glass-card glass-card-hover p-6 rounded-3xl border border-gray-800 flex flex-col justify-between group"
+                className="glass-card p-8 rounded-3xl border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all duration-300 group hover:-translate-y-1.5 shadow-xl bg-gradient-to-b from-[#1A0307]/80 to-[#0D0204]"
               >
-                <div>
-                  <div className="w-12 h-12 rounded-2xl bg-gray-900 border border-gray-800 flex items-center justify-center mb-5 group-hover:scale-110 group-hover:border-[#0EA5E9]/50 transition-all">
-                    <Icon className={`w-6 h-6 ${item.color}`} />
+                <div className="space-y-4">
+                  <div className="w-14 h-14 rounded-2xl bg-[#8B0000]/40 border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] group-hover:scale-110 transition-transform">
+                    <IconComp className="w-7 h-7" />
                   </div>
-                  <h3 className="text-lg font-bold font-outfit text-white mb-2 group-hover:text-[#0EA5E9] transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-400 text-xs leading-relaxed">
-                    {item.desc}
+
+                  <div>
+                    <span className="text-[10px] font-mono text-[#F5D77A] font-bold uppercase tracking-widest">
+                      {pillar.subtitle}
+                    </span>
+                    <h3 className="text-xl font-bold font-outfit text-white group-hover:text-[#D4AF37] transition-colors mt-0.5">
+                      {pillar.title}
+                    </h3>
+                  </div>
+
+                  <p className="text-sm text-gray-300 leading-relaxed font-sans">
+                    {pillar.description}
                   </p>
                 </div>
               </div>

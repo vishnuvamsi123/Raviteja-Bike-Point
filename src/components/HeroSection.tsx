@@ -1,5 +1,5 @@
-import React from 'react';
-import { Calendar, Phone, User, MapPin, Clock, ArrowRight, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Calendar, Phone, MessageSquare, ShieldCheck, Award, Wrench, ChevronDown, Sparkles } from 'lucide-react';
 
 interface HeroSectionProps {
   onOpenBooking: () => void;
@@ -9,160 +9,290 @@ interface HeroSectionProps {
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onOpenBooking,
+  onRequestMobilePush,
+  hasNotificationPermission,
 }) => {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isBikeHovered, setIsBikeHovered] = useState(false);
+
+  // Counter State for Statistics
+  const [expCount, setExpCount] = useState(0);
+  const [bikesCount, setBikesCount] = useState(0);
+  const [commitCount, setCommitCount] = useState(0);
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Parallax mouse tracker
+    const handleMouseMove = (e: MouseEvent) => {
+      const { innerWidth, innerHeight } = window;
+      const x = (e.clientX / innerWidth - 0.5) * 20;
+      const y = (e.clientY / innerHeight - 0.5) * 20;
+      setMousePos({ x, y });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  useEffect(() => {
+    // Animated Counters Logic
+    let start = 0;
+    const duration = 2000;
+    const intervalTime = 30;
+    const steps = duration / intervalTime;
+
+    const expStep = 26 / steps;
+    const bikesStep = 10000 / steps;
+    const commitStep = 100 / steps;
+
+    const timer = setInterval(() => {
+      start += 1;
+      setExpCount((prev) => Math.min(26, Math.floor(prev + expStep)));
+      setBikesCount((prev) => Math.min(10000, Math.floor(prev + bikesStep)));
+      setCommitCount((prev) => Math.min(100, Math.floor(prev + commitStep)));
+
+      if (start >= steps) {
+        setExpCount(26);
+        setBikesCount(10000);
+        setCommitCount(100);
+        clearInterval(timer);
+      }
+    }, intervalTime);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section 
       id="hero" 
-      className="relative min-h-screen w-full flex flex-col justify-between pt-20 sm:pt-24 pb-8 sm:pb-12 px-3 sm:px-6 lg:px-12 overflow-hidden bg-[#0A0102] text-white selection:bg-[#D4AF37] selection:text-black"
+      ref={containerRef}
+      className="relative min-h-screen w-full flex flex-col justify-between pt-24 pb-8 overflow-hidden bg-gradient-to-b from-[#0D0204] via-[#1A0307] to-[#0D0204] border-b border-[#D4AF37]/20"
     >
       
-      {/* 1. Deep Crimson & Gold Silk Background Atmosphere */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        {/* Soft Radial Crimson Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] md:w-[900px] h-[300px] sm:h-[500px] md:h-[700px] bg-radial from-[#660004]/40 via-[#2B0002]/20 to-transparent rounded-full blur-3xl"></div>
-        {/* Gold Light Ray Accents */}
-        <div className="absolute top-0 left-1/4 w-48 sm:w-80 md:w-[400px] h-48 sm:h-80 md:h-[400px] bg-[#D4AF37]/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 w-48 sm:w-80 md:w-[400px] h-48 sm:h-80 md:h-[400px] bg-[#8B0000]/15 rounded-full blur-3xl"></div>
-        {/* Golden Filigree Corner Motifs */}
-        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 w-8 h-8 sm:w-12 sm:h-12 border-t-2 border-l-2 border-[#D4AF37]/30 opacity-60"></div>
-        <div className="absolute top-3 right-3 sm:top-4 sm:right-4 w-8 h-8 sm:w-12 sm:h-12 border-t-2 border-r-2 border-[#D4AF37]/30 opacity-60"></div>
-        <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 w-8 h-8 sm:w-12 sm:h-12 border-b-2 border-l-2 border-[#D4AF37]/30 opacity-60"></div>
-        <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 w-8 h-8 sm:w-12 sm:h-12 border-b-2 border-r-2 border-[#D4AF37]/30 opacity-60"></div>
-      </div>
-
-      {/* 2. Main Center Hero Content Stack */}
-      <div className="relative z-10 my-auto flex flex-col items-center text-center max-w-6xl mx-auto w-full py-4 sm:py-8">
+      {/* Background Studio Lighting & Volumetric Red Glow Orbs */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#8B0000]/20 rounded-full blur-[140px] animate-pulse"></div>
+        <div className="absolute bottom-1/3 right-1/4 w-[600px] h-[600px] bg-[#D4AF37]/10 rounded-full blur-[160px]"></div>
+        <div className="absolute top-10 right-10 w-96 h-96 bg-red-950/30 rounded-full blur-[120px]"></div>
         
-        {/* Decorative Gold Top Crown Divider */}
-        <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-          <div className="h-[1px] w-12 sm:w-20 bg-gradient-to-r from-transparent to-[#D4AF37]"></div>
-          <div className="w-2 sm:w-2.5 h-2 sm:h-2.5 rotate-45 bg-[#D4AF37]"></div>
-          <div className="h-[1px] w-12 sm:w-20 bg-gradient-to-l from-transparent to-[#D4AF37]"></div>
-        </div>
-
-        {/* Brand Name: RAVITEJA (Fluid responsive sizes across 320px mobile to 4K desktop) */}
-        <h1 className="font-serif-title font-extrabold text-[2.2rem] xs:text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl tracking-[0.1em] sm:tracking-[0.18em] uppercase text-transparent bg-clip-text bg-gradient-to-b from-white via-[#F5EAD4] to-[#D4AF37] drop-shadow-2xl mb-2 leading-none max-w-full break-words">
-          RAVITEJA
-        </h1>
-
-        {/* Subtitle: BIKE POINT */}
-        <div className="flex items-center justify-center gap-2 sm:gap-6 my-2 sm:my-4 w-full max-w-xl px-2">
-          <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#D4AF37]/80 to-[#D4AF37]"></div>
-          <span className="font-outfit font-extrabold text-sm xs:text-base sm:text-2xl md:text-3xl text-[#F3C649] tracking-[0.2em] sm:tracking-[0.35em] uppercase whitespace-nowrap">
-            BIKE POINT
-          </span>
-          <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent via-[#D4AF37]/80 to-[#D4AF37]"></div>
-        </div>
-
-        {/* Mechanical Detail Ornament */}
-        <div className="flex items-center justify-center gap-2 sm:gap-3 my-2 sm:my-4 text-[#D4AF37] text-[10px] sm:text-xs font-mono tracking-widest uppercase flex-wrap px-2">
-          <span className="h-[1px] w-6 sm:w-10 bg-[#D4AF37]/40 hidden xs:inline-block"></span>
-          <span>⚙️ MOTORCYCLE REPAIR & SERVICE ⚙️</span>
-          <span className="h-[1px] w-6 sm:w-10 bg-[#D4AF37]/40 hidden xs:inline-block"></span>
-        </div>
-
-        {/* Hero CTA Buttons (Fluid layout on Mobile / Tablet / Desktop) */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-6 sm:mt-8 w-full sm:w-auto px-4">
-          {/* BOOK A SERVICE */}
-          <button
-            onClick={onOpenBooking}
-            className="w-full sm:w-auto glow-btn-gold px-6 sm:px-8 py-3.5 rounded-xl font-outfit font-extrabold text-xs uppercase tracking-widest text-black flex items-center justify-center gap-2.5 shadow-xl transition-transform hover:scale-105"
-          >
-            <Calendar className="w-4 h-4 text-black" />
-            <span>BOOK A SERVICE</span>
-            <ArrowRight className="w-4 h-4 text-black" />
-          </button>
-
-          {/* CALL NOW */}
-          <a
-            href="tel:9849020133"
-            className="w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-xl font-outfit font-extrabold text-xs uppercase tracking-widest text-white border border-[#D4AF37] hover:bg-[#D4AF37]/10 flex items-center justify-center gap-2.5 transition-all"
-          >
-            <Phone className="w-4 h-4 text-[#D4AF37]" />
-            <span>CALL NOW</span>
-          </a>
-
-          {/* WHATSAPP DIRECT */}
-          <a
-            href="https://wa.me/919849020133?text=Hi%20Mallula%20Satyanarayana%20garu,%20I%20want%20to%20book%20a%20service%20for%20my%20bike%20at%20Raviteja%20Bike%20Point."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full sm:w-auto glow-btn-red px-6 sm:px-7 py-3.5 rounded-xl font-outfit font-bold text-xs uppercase tracking-widest text-white flex items-center justify-center gap-2"
-          >
-            <MessageSquare className="w-4 h-4" />
-            <span>WHATSAPP</span>
-          </a>
-        </div>
-
+        {/* Subtle Carbon Fiber Pattern Overlay */}
+        <div 
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `radial-gradient(#D4AF37 1px, transparent 1px)`,
+            backgroundSize: '24px 24px'
+          }}
+        ></div>
       </div>
 
-      {/* 3. Bottom Horizontal Information Bar (Responsive grid for mobile, tablet, and desktop) */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto mt-4 sm:mt-6">
-        <div className="glass-card rounded-2xl border border-[#D4AF37]/40 bg-[#0F0204]/90 p-3 sm:p-5 shadow-2xl backdrop-blur-md">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-0 divide-y sm:divide-y-0 lg:divide-x divide-[#D4AF37]/30 text-left">
+      {/* Main 16:9 Aspect Ratio Hero Content Area */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full my-auto relative z-10 py-6">
+        
+        {/* TOP CENTER: Small Elegant Gold Lord Ganesha Emblem Header */}
+        <div className="flex flex-col items-center justify-center mb-6 text-center animate-fade-in">
+          <div className="inline-flex items-center gap-3 px-5 py-1.5 rounded-full bg-[#1A0307]/80 border border-[#D4AF37]/40 backdrop-blur-md shadow-lg shadow-black/60">
+            <img
+              src="./images/ganesha.png"
+              alt="Lord Ganesha Emblem"
+              className="w-5 h-5 object-contain filter drop-shadow-[0_0_8px_rgba(212,175,55,0.8)]"
+            />
+            <span className="font-serif-title text-xs font-bold text-[#F5D77A] tracking-[0.25em] uppercase">
+              SRI GANESHAIAH NAMAHA • TRADITION & TRUST SINCE 1992
+            </span>
+          </div>
+          <div className="w-32 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mt-2"></div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          {/* LEFT SIDE: Brand Title, Taglines, & CTAs (Cols 1-7) */}
+          <div className="lg:col-span-7 space-y-6 text-left">
             
-            {/* Section 1: Owner */}
-            <div className="flex items-center gap-3 px-2 sm:px-3 pt-2 sm:pt-0 lg:py-0">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] bg-black/50 shrink-0">
-                <User className="w-4 h-4 sm:w-5 sm:h-5" />
+            {/* Brand Title Block */}
+            <div className="space-y-1">
+              
+              {/* Gold Tag */}
+              <div className="inline-flex items-center gap-2 text-xs font-mono font-bold tracking-[0.2em] text-[#D4AF37] uppercase bg-[#8B0000]/20 border border-[#D4AF37]/30 px-3.5 py-1 rounded-md">
+                <Sparkles className="w-3.5 h-3.5 text-[#F5D77A]" />
+                <span>26+ YEARS OF EXPERIENCE • ESTD 1992</span>
               </div>
-              <div>
-                <span className="font-outfit font-extrabold text-xs text-white uppercase tracking-wider block">
-                  MALLULA SATYANARAYANA
-                </span>
-                <span className="text-[10px] text-[#F3C649] font-mono tracking-widest uppercase">
-                  OWNER
-                </span>
+
+              {/* RAVITEJA */}
+              <h1 className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-serif-title font-black tracking-tight text-white uppercase leading-none drop-shadow-2xl">
+                RAVITEJA
+              </h1>
+
+              {/* BIKE POINT Subtitle */}
+              <div className="flex items-center gap-4 pt-1">
+                <div className="h-[2px] w-12 bg-gradient-to-r from-[#D4AF37] to-[#8B0000]"></div>
+                <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#D4AF37] tracking-[0.2em] uppercase font-outfit">
+                  BIKE POINT
+                </h2>
+                <div className="h-[2px] flex-1 bg-gradient-to-r from-[#8B0000] to-transparent"></div>
               </div>
             </div>
 
-            {/* Section 2: Contact */}
-            <div className="flex items-center gap-3 px-2 sm:px-3 pt-2 sm:pt-0 lg:py-0">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] bg-black/50 shrink-0">
-                <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
-              </div>
-              <div>
-                <a href="tel:9849020133" className="font-outfit font-extrabold text-xs sm:text-sm text-white hover:text-[#D4AF37] font-mono block">
-                  9849020133
-                </a>
-                <span className="text-[10px] text-[#F3C649] font-mono tracking-widest uppercase">
-                  CONTACT NO
-                </span>
-              </div>
+            {/* Main Headline & Support Description */}
+            <div className="space-y-3 pt-2">
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-100 tracking-wide font-outfit">
+                "PRECISION FOR EVERY RIDE."
+              </h3>
+              <p className="text-base sm:text-lg text-gray-300 max-w-xl font-sans leading-relaxed">
+                Professional two-wheeler service, repair, and precision maintenance in Amalapuram under the master craftsmanship of <strong className="text-white font-semibold">Mallula Satyanarayana</strong>.
+              </p>
             </div>
 
-            {/* Section 3: Address */}
-            <div className="flex items-center gap-3 px-2 sm:px-3 pt-2 sm:pt-0 lg:py-0">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] bg-black/50 shrink-0">
-                <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
-              </div>
-              <div>
-                <span className="font-outfit font-bold text-xs text-white leading-tight block">
-                  HIGH SCHOOL ROAD, VICTORY BAZAR
-                </span>
-                <span className="text-[10px] text-gray-300 font-mono block">
-                  AMALAPURAM – 533201
-                </span>
-              </div>
+            {/* Primary Action Buttons */}
+            <div className="flex flex-wrap items-center gap-4 pt-4">
+              
+              {/* BOOK A SERVICE */}
+              <button
+                onClick={onOpenBooking}
+                className="glow-btn-gold px-8 py-4 rounded-2xl font-outfit font-extrabold text-sm uppercase tracking-widest text-black flex items-center gap-3 border-2 border-[#D4AF37] shadow-xl shadow-[#D4AF37]/20 group transition-all duration-300 transform hover:-translate-y-1"
+              >
+                <Calendar className="w-5 h-5 text-black group-hover:scale-110 transition-transform" />
+                <span>BOOK A SERVICE</span>
+              </button>
+
+              {/* CALL NOW */}
+              <a
+                href="tel:9849020133"
+                className="px-8 py-4 rounded-2xl font-outfit font-extrabold text-sm uppercase tracking-widest text-white border-2 border-[#D4AF37]/50 bg-[#1A0307]/70 hover:bg-[#8B0000]/40 hover:border-[#D4AF37] flex items-center gap-3 shadow-lg transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-md"
+              >
+                <Phone className="w-5 h-5 text-[#D4AF37]" />
+                <span>CALL 9849020133</span>
+              </a>
+
+              {/* WHATSAPP */}
+              <a
+                href="https://wa.me/919849020133?text=Hi%20Mallula%20Satyanarayana%20garu,%20I%20want%20to%20book%20a%20bike%20service%20at%20Raviteja%20Bike%20Point."
+                target="_blank"
+                rel="noreferrer"
+                className="px-6 py-4 rounded-2xl font-outfit font-bold text-xs uppercase tracking-widest text-emerald-400 border border-emerald-500/40 bg-emerald-950/20 hover:bg-emerald-900/40 flex items-center gap-2 backdrop-blur-md transition-all"
+              >
+                <MessageSquare className="w-4 h-4 text-emerald-400" />
+                <span>WHATSAPP</span>
+              </a>
             </div>
 
-            {/* Section 4: Operating Hours */}
-            <div className="flex items-center gap-3 px-2 sm:px-3 pt-2 sm:pt-0 lg:py-0">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[#D4AF37] flex items-center justify-center text-emerald-400 bg-black/50 shrink-0">
-                <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
+            {/* Quick Guarantee Micro-Badges */}
+            <div className="grid grid-cols-3 gap-3 pt-4 border-t border-gray-800/80 max-w-lg">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                <span className="text-[11px] text-gray-300 font-medium">100% Genuine OEM Parts</span>
               </div>
-              <div>
-                <span className="font-outfit font-extrabold text-xs text-white uppercase tracking-wider block">
-                  MONDAY – SUNDAY
-                </span>
-                <span className="text-[10px] text-emerald-400 font-mono font-bold block">
-                  10:00 AM – 10:00 PM
-                </span>
+              <div className="flex items-center gap-2">
+                <Award className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                <span className="text-[11px] text-gray-300 font-medium">26+ Yrs Master Service</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Wrench className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                <span className="text-[11px] text-gray-300 font-medium">Honest & Transparent Price</span>
               </div>
             </div>
 
           </div>
+
+          {/* RIGHT SIDE: Interactive 3D Realistic Modern Motorcycle Render (Cols 8-12) */}
+          <div className="lg:col-span-5 relative flex items-center justify-center mt-6 lg:mt-0">
+            
+            {/* Soft Red Studio Ambient Halo behind 3D Bike */}
+            <div className="absolute w-[350px] sm:w-[450px] h-[350px] sm:h-[450px] bg-gradient-to-tr from-[#8B0000]/40 via-[#D4AF37]/20 to-transparent rounded-full blur-[90px] pointer-events-none"></div>
+
+            {/* Interactive 3D Render Card */}
+            <div 
+              onMouseEnter={() => setIsBikeHovered(true)}
+              onMouseLeave={() => setIsBikeHovered(false)}
+              style={{
+                transform: `perspective(1000px) rotateY(${mousePos.x * 0.4}deg) rotateX(${-mousePos.y * 0.4}deg) scale(${isBikeHovered ? 1.03 : 1})`,
+                transition: isBikeHovered ? 'transform 0.1s ease-out' : 'transform 0.5s ease-out'
+              }}
+              className="relative w-full max-w-lg rounded-3xl overflow-hidden glass-card border border-[#D4AF37]/40 p-2 group shadow-2xl shadow-black/90 cursor-pointer"
+            >
+              {/* Studio Render Frame */}
+              <div className="relative rounded-2xl overflow-hidden bg-black/90 aspect-[16/10]">
+                
+                {/* Generated 3D Motorcycle Image */}
+                <img
+                  src="./images/hero_3d_motorcycle.jpg"
+                  alt="Raviteja Bike Point 3D Realistic Modern Motorcycle Render"
+                  className="w-full h-full object-cover object-center transform transition-transform duration-700 group-hover:scale-105"
+                />
+
+                {/* Red Rim Lighting Overlay Effect */}
+                <div 
+                  className={`absolute inset-0 pointer-events-none transition-opacity duration-500 bg-gradient-to-t from-red-950/60 via-transparent to-amber-500/10 ${
+                    isBikeHovered ? 'opacity-100' : 'opacity-60'
+                  }`}
+                ></div>
+
+                {/* High-End Automotive Studio Badge */}
+                <div className="absolute top-3 left-3 glass-card px-3 py-1 rounded-full border border-[#D4AF37]/40 text-[10px] font-mono text-[#F5D77A] uppercase tracking-widest flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                  <span>3D AUTOMOTIVE STUDIO RENDER</span>
+                </div>
+
+                {/* Interactive Touch / Hover Label */}
+                <div className="absolute bottom-3 right-3 glass-card px-3 py-1 rounded-full text-[10px] text-gray-300 font-mono flex items-center gap-1">
+                  <span>INTERACTIVE 3D VIEW</span>
+                </div>
+              </div>
+
+              {/* Ground Shadow & Golden Light Reflection */}
+              <div className="w-full h-4 bg-gradient-to-r from-transparent via-[#D4AF37]/20 to-transparent blur-md mt-1"></div>
+            </div>
+
+          </div>
+
         </div>
+
+        {/* BOTTOM HERO STATISTICS BAR (26+ YEARS, 10000+ BIKES, 100% COMMITMENT) */}
+        <div className="mt-12 pt-6 border-t border-[#D4AF37]/30 grid grid-cols-3 gap-4 sm:gap-8 max-w-4xl mx-auto text-center">
+          
+          {/* STAT 1: YEARS */}
+          <div className="glass-card p-4 sm:p-5 rounded-2xl border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all transform hover:-translate-y-1">
+            <div className="text-3xl sm:text-4xl md:text-5xl font-black font-outfit text-transparent bg-clip-text bg-gradient-to-r from-[#F5D77A] via-[#D4AF37] to-[#B8860B] drop-shadow-md">
+              {expCount}+
+            </div>
+            <p className="text-[10px] sm:text-xs font-mono font-bold tracking-widest text-gray-300 uppercase mt-1">
+              YEARS EXPERIENCE
+            </p>
+          </div>
+
+          {/* STAT 2: BIKES SERVICED */}
+          <div className="glass-card p-4 sm:p-5 rounded-2xl border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all transform hover:-translate-y-1">
+            <div className="text-3xl sm:text-4xl md:text-5xl font-black font-outfit text-transparent bg-clip-text bg-gradient-to-r from-[#F5D77A] via-[#D4AF37] to-[#B8860B] drop-shadow-md">
+              {bikesCount.toLocaleString()}+
+            </div>
+            <p className="text-[10px] sm:text-xs font-mono font-bold tracking-widest text-gray-300 uppercase mt-1">
+              BIKES SERVICED
+            </p>
+          </div>
+
+          {/* STAT 3: COMMITMENT */}
+          <div className="glass-card p-4 sm:p-5 rounded-2xl border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all transform hover:-translate-y-1">
+            <div className="text-3xl sm:text-4xl md:text-5xl font-black font-outfit text-transparent bg-clip-text bg-gradient-to-r from-[#F5D77A] via-[#D4AF37] to-[#B8860B] drop-shadow-md">
+              {commitCount}%
+            </div>
+            <p className="text-[10px] sm:text-xs font-mono font-bold tracking-widest text-gray-300 uppercase mt-1">
+              SATISFACTION COMMITMENT
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Scroll Down Hint */}
+      <div className="flex justify-center items-center pt-4">
+        <a 
+          href="#about" 
+          className="flex flex-col items-center text-gray-400 hover:text-[#D4AF37] transition-colors gap-1 text-[10px] tracking-widest uppercase font-mono"
+        >
+          <span>EXPLORE HERITAGE & SERVICES</span>
+          <ChevronDown className="w-4 h-4 animate-bounce text-[#D4AF37]" />
+        </a>
       </div>
 
     </section>

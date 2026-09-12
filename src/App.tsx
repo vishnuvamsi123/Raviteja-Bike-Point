@@ -3,12 +3,16 @@ import { ParticleCanvas } from './components/ParticleCanvas';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { BrandsSlider } from './components/BrandsSlider';
+import { AboutSection } from './components/AboutSection';
 import { BikesSection } from './components/BikesSection';
-import { ServicesCatalog } from './components/ServicesCatalog';
+import { ServicesCatalog as ServicesSection } from './components/ServicesCatalog';
 import { EstimateCalculator } from './components/EstimateCalculator';
 import { WhyChooseUs } from './components/WhyChooseUs';
+import { GallerySection } from './components/GallerySection';
+import { ReviewsSection } from './components/ReviewsSection';
 import { FAQSection } from './components/FAQSection';
 import { ContactSection } from './components/ContactSection';
+import { FinalCTASection } from './components/FinalCTASection';
 import { Footer } from './components/Footer';
 import { FloatingActions } from './components/FloatingActions';
 import { BookingModal } from './components/BookingModal';
@@ -25,7 +29,7 @@ export const App: React.FC = () => {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [hasNotificationPermission, setHasNotificationPermission] = useState<boolean>(false);
 
-  // Load / Store Notifications in LocalStorage safely
+  // Load / Store Notifications in LocalStorage (Zero fake notifications - starts empty)
   const [notifications, setNotifications] = useState<BookingNotification[]>(() => {
     try {
       const saved = localStorage.getItem('raviteja_owner_notifications');
@@ -76,7 +80,6 @@ export const App: React.FC = () => {
   const handleAddNotification = (newNotif: BookingNotification) => {
     setNotifications((prev) => [newNotif, ...prev]);
 
-    // Send native system mobile push notification for REAL customer bookings only
     try {
       sendMobilePushNotification(
         `New Booking: ${newNotif.name}`,
@@ -84,7 +87,6 @@ export const App: React.FC = () => {
       );
     } catch (e) {}
 
-    // Audio chime
     if (soundEnabled) {
       try {
         const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
@@ -153,7 +155,7 @@ export const App: React.FC = () => {
       {/* Background Interactive Particle Canvas */}
       <ParticleCanvas />
 
-      {/* Sticky Header with Logo & Mobile Notifications */}
+      {/* Sticky Header with Logo, Ganesha & Navigation */}
       <Navbar
         onOpenBooking={handleOpenBooking}
         onOpenOwnerDashboard={() => setIsOwnerDashboardOpen(true)}
@@ -167,7 +169,7 @@ export const App: React.FC = () => {
       {/* Main Content */}
       <main className="relative z-10 space-y-0">
         
-        {/* Full-width Widescreen Homepage Logo Card */}
+        {/* Full-width 16:9 Cinematic Hero with 3D Rendered Motorcycle & Top Center Ganesha */}
         <HeroSection
           onOpenBooking={handleOpenBooking}
           onRequestMobilePush={handleRequestMobilePush}
@@ -177,23 +179,35 @@ export const App: React.FC = () => {
         {/* Featured Brands Marquee */}
         <BrandsSlider />
 
-        {/* Dedicated Section for Hero Splendor & Glamour Bikes */}
+        {/* About Section: 26+ Years Story & 1992→Today Timeline */}
+        <AboutSection />
+
+        {/* Dedicated Section for Hero Splendor, Glamour & Honda Activa */}
         <BikesSection onBookBike={handleBookBike} />
 
-        {/* Master Services Catalog */}
-        <ServicesCatalog onSelectService={handleSelectServiceToBook} />
+        {/* Master Services Catalog & Interactive Inspector */}
+        <ServicesSection onSelectService={handleSelectServiceToBook} />
 
-        {/* Cost Estimator */}
+        {/* Cost Estimator Calculator */}
         <EstimateCalculator onBookWithEstimate={handleBookWithEstimate} />
 
-        {/* Why Choose Us */}
+        {/* 6 Pillars: Why Choose Us */}
         <WhyChooseUs />
+
+        {/* Workshop Craftsmanship Gallery */}
+        <GallerySection />
+
+        {/* Testimonial Reviews Carousel */}
+        <ReviewsSection />
 
         {/* FAQ Accordion */}
         <FAQSection />
 
-        {/* Contact & Location Hub */}
+        {/* Location & Contact Hub with Satellite Map Embed */}
         <ContactSection />
+
+        {/* Final Red Cinematic CTA Section */}
+        <FinalCTASection onOpenBooking={handleOpenBooking} />
 
       </main>
 

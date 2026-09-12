@@ -1,218 +1,253 @@
 import React, { useState } from 'react';
-import { 
-  Wrench, 
-  Settings, 
-  Droplet, 
-  Disc, 
-  Link, 
-  Zap, 
-  Battery, 
-  CircleDashed, 
-  ShieldAlert, 
-  Sliders, 
-  Gauge, 
-  CalendarCheck,
-  CheckCircle,
-  ArrowRight,
-  Clock
-} from 'lucide-react';
+import { Wrench, Disc, Droplets, Zap, ShieldAlert, Cpu, BatteryCharging, Gauge, Check, Calendar, ArrowRight } from 'lucide-react';
 
 interface ServicesCatalogProps {
   onSelectService: (serviceName: string) => void;
 }
 
 export const ServicesCatalog: React.FC<ServicesCatalogProps> = ({ onSelectService }) => {
-  const [activeCategory, setActiveCategory] = useState<string>('All');
-
-  const categories = ['All', 'Maintenance', 'Engine & Power', 'Diagnostics', 'Brakes & Suspension'];
+  const [selectedServiceIdx, setSelectedServiceIdx] = useState<number>(0);
 
   const services = [
     {
       id: 'general-service',
-      title: 'General Service',
-      category: 'Maintenance',
-      icon: Wrench,
-      desc: 'Complete 30-point inspection for Splendor, Glamour, Activa & Shine. Carburetor tuning, spark plug wash, air filter clean & cable lubing.',
+      title: 'General Bike Service',
+      category: 'PERIODIC MAINTENANCE',
+      price: '₹450 - ₹750',
       time: '2 - 3 Hours',
-      popular: true,
-      color: 'from-[#D4AF37] to-[#AA820A]'
+      icon: Wrench,
+      description: 'Comprehensive 32-point inspection including engine tuning, spark plug cleaning, air filter wash, chain tensioning, carburetor/FI adjustment, and brake alignment.',
+      details: ['32-Point Checkup', 'Spark Plug Polish', 'Carburetor / FI Clean', 'Brake Adjustment', 'General Wash']
     },
     {
-      id: 'engine-overhaul',
-      title: 'Engine Overhaul',
-      category: 'Engine & Power',
-      icon: Settings,
-      desc: 'Precision cylinder boring, piston replacement, valve seating, crank balancing & gasket renewal for restored 65+ kmpl mileage.',
+      id: 'engine-repair',
+      title: 'Engine Repair & Overhaul',
+      category: 'PRECISION MECHANICAL',
+      price: '₹1,200 - ₹3,500',
       time: '1 - 2 Days',
-      popular: true,
-      color: 'from-[#8B0000] to-[#B31217]'
+      icon: Cpu,
+      description: 'Complete engine head dekoking, piston ring replacement, valve seating, crank shaft alignment, and noise reduction for smooth acceleration.',
+      details: ['Piston Ring Swap', 'Valve Grinding', 'Crank Alignment', 'Smoke Elimination', 'Compression Test']
     },
     {
       id: 'oil-change',
-      title: 'Engine Oil Change',
-      category: 'Maintenance',
-      icon: Droplet,
-      desc: 'Castrol / Motul engine oil flush with OEM oil filter replacement for peak thermal control in summer heat.',
-      time: '25 Mins',
-      popular: false,
-      color: 'from-amber-400 to-[#D4AF37]'
+      title: 'Oil Change & Lube Swap',
+      category: 'FLUID MAINTENANCE',
+      price: '₹350 - ₹950',
+      time: '20 Minutes',
+      icon: Droplets,
+      description: 'Premium synthetic 10W-30 / 20W-40 engine oil swap with genuine oil filter replacement, gear oil fill, and smooth clutch performance.',
+      details: ['Synthetic Oil Swap', 'Oil Filter Replacement', 'Gear Lube Wash', 'Drain Plug Gasket', 'Disposal Handling']
     },
     {
       id: 'brake-repair',
-      title: 'Brake Overhaul',
-      category: 'Brakes & Suspension',
+      title: 'Brake Repair & Bleeding',
+      category: 'SAFETY SYSTEM',
+      price: '₹250 - ₹650',
+      time: '45 Minutes',
       icon: Disc,
-      desc: 'Front disc bleeding, brake shoe replacement for drum brakes, caliper pin greasing & immediate stopping power.',
-      time: '40 Mins',
-      popular: false,
-      color: 'from-emerald-500 to-[#D4AF37]'
-    },
-    {
-      id: 'chain-adjustment',
-      title: 'Chain Clean & Lubing',
-      category: 'Maintenance',
-      icon: Link,
-      desc: 'Drive chain degreasing, O-ring inspection, tension adjustment, and high-speed chain lube application.',
-      time: '20 Mins',
-      popular: false,
-      color: 'from-[#8B0000] to-rose-700'
-    },
-    {
-      id: 'electrical-repair',
-      title: 'Wiring & Battery Test',
-      category: 'Diagnostics',
-      icon: Zap,
-      desc: 'Self-start coil testing, i3S system diagnostics, wiring short circuit fix, headlight LED upgrades & horn wiring.',
-      time: '1 - 2 Hours',
-      popular: false,
-      color: 'from-yellow-400 to-[#D4AF37]'
+      description: 'Front hydraulic disc brake pad replacement, DOT-4 brake fluid bleeding, rear drum brake shoe cleaning, and lever sensitivity adjustment.',
+      details: ['Disc Pad Swap', 'Fluid Bleeding', 'Drum Shoe Scuffing', 'Brake Line Purge', 'Lever Lubrication']
     },
     {
       id: 'clutch-repair',
-      title: 'Clutch Assembly Repair',
-      category: 'Engine & Power',
+      title: 'Clutch & Transmission Repair',
+      category: 'POWER DELIVY',
+      price: '₹550 - ₹1,400',
+      time: '2 - 4 Hours',
       icon: Gauge,
-      desc: 'Friction plate replacement, pressure plate alignment, and smooth gear lever adjustment for effortless pickup.',
-      time: '2 Hours',
-      popular: false,
-      color: 'from-[#D4AF37] to-[#8B0000]'
+      description: 'Clutch plate replacement, friction disc alignment, clutch cable adjustment, and smooth gear shifting without slippage.',
+      details: ['Clutch Plate Swap', 'Pressure Plate Polish', 'Cable Lube', 'Gear Shifter Tuning', 'Primary Gear Check']
     },
     {
-      id: 'suspension-service',
-      title: 'Front Fork Suspension',
-      category: 'Brakes & Suspension',
-      icon: Sliders,
-      desc: 'Fork seal replacement, fork oil refill, and bush replacement for smooth pothole absorption.',
+      id: 'chain-service',
+      title: 'Chain Clean & Lube Service',
+      category: 'DRIVE TRAIN',
+      price: '₹150 - ₹300',
+      time: '30 Minutes',
+      icon: Wrench,
+      description: 'Degreasing drive chain with high-pressure solvents, O-ring inspection, tension setting, and Motul chain lube application.',
+      details: ['Deep Degreasing', 'Tension Adjustment', 'O-Ring Inspection', 'Motul Lube Spray', 'Sprocket Wear Check']
+    },
+    {
+      id: 'electrical-repair',
+      title: 'Electrical & Wiring Repair',
+      category: 'ELECTRICAL SYSTEM',
+      price: '₹300 - ₹850',
+      time: '1 - 3 Hours',
+      icon: Zap,
+      description: 'Diagnosing headlamp wiring, turn indicator relays, horn replacement, stator coil testing, and short-circuit troubleshooting.',
+      details: ['Harness Inspection', 'Stator Coil Check', 'Relay Replacement', 'Indicator Wiring', 'Fuse Box Repair']
+    },
+    {
+      id: 'battery-service',
+      title: 'Battery Charging & Replacement',
+      category: 'POWER STORAGE',
+      price: '₹100 - ₹2,200',
+      time: '30 Minutes',
+      icon: BatteryCharging,
+      description: 'Exide/Amaron dry battery health check, terminal corrosion cleaning, trickle charging, and new battery replacement with warranty.',
+      details: ['Voltage Testing', 'Terminal Cleaning', 'Deep Trickle Charge', 'Warranty Support', 'Old Battery Recycle']
+    },
+    {
+      id: 'tyre-service',
+      title: 'Tyre & Tube Replacement',
+      category: 'WHEEL ASSEMBLY',
+      price: '₹200 - ₹2,500',
+      time: '30 Minutes',
+      icon: Disc,
+      description: 'Tubeless tyre fitment, heavy-duty tube replacement, puncture repair, and wheel alignment for vibration-free riding.',
+      details: ['Tubeless Fitment', 'Heavy Duty Tube', 'Wheel Balancing', 'Valve Replacement', 'Rim Inspection']
+    },
+    {
+      id: 'suspension-repair',
+      title: 'Suspension & Fork Seal Repair',
+      category: 'RIDE COMFORT',
+      price: '₹450 - ₹1,200',
       time: '2 - 3 Hours',
-      popular: false,
-      color: 'from-amber-500 to-[#8B0000]'
+      icon: ShieldAlert,
+      description: 'Front telescopic shock absorber fork oil replacement, oil seal swap, rear shock bush replacement, and bump absorption tuning.',
+      details: ['Fork Oil Swap', 'Oil Seal Replacement', 'Bush Replacement', 'Damper Inspection', 'Alignment Check']
     },
     {
       id: 'periodic-maintenance',
-      title: 'Periodic Maintenance',
-      category: 'Maintenance',
-      icon: CalendarCheck,
-      desc: 'Regular periodic maintenance per factory manuals for Hero, Honda, TVS, RE, Yamaha & Bajaj.',
-      time: '2 Hours',
-      popular: false,
-      color: 'from-[#D4AF37] to-amber-600'
+      title: 'Periodic Maintenance Program',
+      category: 'MILESTONE SERVICE',
+      price: '₹600 - ₹1,100',
+      time: '3 Hours',
+      icon: Wrench,
+      description: 'Comprehensive 5000 km / 10,000 km scheduled maintenance covering all fluids, filters, cables, greasing, and road testing.',
+      details: ['All Filters Replaced', 'Greasing Pivot Points', 'Tappet Adjustment', 'Comprehensive Road Test', 'Service Reminder Tag']
+    },
+    {
+      id: 'troubleshooting',
+      title: 'Motorcycle Troubleshooting',
+      category: 'DIAGNOSTICS',
+      price: '₹250 - ₹600',
+      time: '1 Hour',
+      icon: Cpu,
+      description: 'Diagnosing starting trouble, cold start issues, engine stalling, poor mileage, and abnormal mechanical noises.',
+      details: ['Starting Trouble Diagnostic', 'Compression Check', 'Fuel Flow Test', 'Ignition Coil Check', 'Mileage Tuning']
     }
   ];
 
-  const filteredServices = activeCategory === 'All' 
-    ? services 
-    : services.filter(s => s.category === activeCategory);
-
   return (
-    <section id="services" className="py-24 relative overflow-hidden bg-[#0D0204]">
+    <section id="services" className="py-24 relative bg-[#0A0102] border-b border-[#D4AF37]/20 text-white overflow-hidden">
+      
+      {/* Ambient Red Glow */}
+      <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-[#8B0000]/10 rounded-full blur-[160px] pointer-events-none"></div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full badge-gold mb-4">
-            <Wrench className="w-4 h-4 text-[#D4AF37]" />
-            <span className="text-xs uppercase tracking-widest font-mono font-bold">
-              GARAGE SERVICES & REPAIRS
-            </span>
+        <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[#8B0000]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-mono font-bold tracking-widest uppercase">
+            <Wrench className="w-3.5 h-3.5" />
+            <span>MASTER REPAIR SERVICES</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold font-outfit text-white tracking-tight">
-            Quality Service <span className="text-gradient-gold">You Can Trust</span>
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif-title font-black text-[#FFFFFF] uppercase tracking-tight">
+            EXPERT TWO-WHEELER <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F5D77A] via-[#D4AF37] to-[#B8860B]">SERVICES CATALOG</span>
           </h2>
-          <p className="mt-4 text-gray-400 text-base">
-            From routine Splendor & Glamour oil changes to complete engine rebuilds by Mallula Satyanarayana.
+
+          <p className="text-base text-gray-300 font-sans leading-relaxed">
+            From quick synthetic oil swaps to complete engine overhauls, Raviteja Bike Point delivers precision servicing for all Hero, Honda, TVS, Bajaj, and Yamaha motorcycles.
           </p>
         </div>
 
-        {/* Category Filters */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2.5 rounded-xl font-outfit font-semibold text-xs tracking-wider uppercase transition-all duration-300 ${
-                activeCategory === cat
-                  ? 'bg-gradient-to-r from-[#D4AF37] to-[#AA820A] text-black font-extrabold shadow-lg shadow-[#D4AF37]/30 scale-105'
-                  : 'glass-card text-gray-400 hover:text-white'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        {/* Active Interactive Service Spotlight Inspector Card */}
+        <div className="mb-16 glass-card p-6 sm:p-10 rounded-3xl border-2 border-[#D4AF37]/50 shadow-2xl bg-gradient-to-r from-[#1A0307] via-[#0D0204] to-[#1A0307]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <div className="lg:col-span-8 space-y-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="px-3 py-1 rounded-full bg-[#8B0000] text-white text-[10px] font-mono font-bold tracking-widest uppercase">
+                  {services[selectedServiceIdx].category}
+                </span>
+                <span className="text-xs text-[#D4AF37] font-mono font-bold">
+                  ESTIMATED DURATION: {services[selectedServiceIdx].time}
+                </span>
+              </div>
+
+              <h3 className="text-2xl sm:text-3xl font-bold font-outfit text-white">
+                {services[selectedServiceIdx].title}
+              </h3>
+
+              <p className="text-sm sm:text-base text-gray-300 leading-relaxed font-sans">
+                {services[selectedServiceIdx].description}
+              </p>
+
+              {/* Service Details Checklist */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+                {services[selectedServiceIdx].details.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-xs text-gray-200">
+                    <Check className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Price & Direct CTA Box */}
+            <div className="lg:col-span-4 p-6 rounded-2xl glass-card border border-[#D4AF37]/40 flex flex-col items-center justify-center text-center space-y-4 bg-[#0D0204]/90">
+              <span className="text-xs font-mono text-gray-400 uppercase tracking-widest">ESTIMATED SERVICE PRICE</span>
+              <div className="text-3xl font-extrabold text-[#D4AF37] font-outfit">
+                {services[selectedServiceIdx].price}
+              </div>
+
+              <button
+                onClick={() => onSelectService(services[selectedServiceIdx].title)}
+                className="w-full glow-btn-gold py-3 px-6 rounded-xl font-bold text-xs uppercase tracking-widest text-black flex items-center justify-center gap-2 border border-[#D4AF37]"
+              >
+                <Calendar className="w-4 h-4 text-black" />
+                <span>BOOK THIS SERVICE</span>
+              </button>
+            </div>
+
+          </div>
         </div>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredServices.map((service) => {
-            const Icon = service.icon;
+        {/* All 12 Service Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {services.map((service, idx) => {
+            const IconComp = service.icon;
+            const isSelected = selectedServiceIdx === idx;
+
             return (
               <div
                 key={service.id}
-                className="group relative glass-card glass-card-hover p-8 rounded-3xl border border-gray-800 flex flex-col justify-between"
+                onClick={() => setSelectedServiceIdx(idx)}
+                className={`glass-card p-6 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-col justify-between group ${
+                  isSelected
+                    ? 'border-[#D4AF37] bg-[#1A0307]/90 shadow-xl shadow-[#8B0000]/30 transform -translate-y-1'
+                    : 'border-gray-800/80 hover:border-[#D4AF37]/60 hover:bg-[#1A0307]/50'
+                }`}
               >
-                {service.popular && (
-                  <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-[#8B0000] text-white text-[10px] font-extrabold tracking-wider uppercase shadow-md">
-                    POPULAR CHOICE
-                  </div>
-                )}
-
-                <div>
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${service.color} p-0.5 shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                    <div className="w-full h-full bg-[#0D0204] rounded-[14px] flex items-center justify-center">
-                      <Icon className="w-7 h-7 text-[#D4AF37]" />
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className={`p-3 rounded-xl ${isSelected ? 'bg-[#8B0000] text-[#D4AF37]' : 'bg-black/60 text-gray-400 group-hover:text-[#D4AF37]'}`}>
+                      <IconComp className="w-6 h-6" />
                     </div>
+                    <span className="text-xs font-mono text-[#D4AF37] font-bold">{service.price}</span>
                   </div>
 
-                  <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[#D4AF37] block mb-2">
-                    {service.category}
-                  </span>
+                  <div>
+                    <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">{service.category}</span>
+                    <h4 className="text-lg font-bold font-outfit text-white group-hover:text-[#D4AF37] transition-colors mt-0.5">
+                      {service.title}
+                    </h4>
+                  </div>
 
-                  <h3 className="text-2xl font-bold font-outfit text-white mb-3 group-hover:text-[#D4AF37] transition-colors">
-                    {service.title}
-                  </h3>
-
-                  <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                    {service.desc}
+                  <p className="text-xs text-gray-300 line-clamp-2 leading-relaxed">
+                    {service.description}
                   </p>
                 </div>
 
-                <div>
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-800/80 mb-6 text-xs text-gray-400 font-mono">
-                    <span className="flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5 text-[#D4AF37]" />
-                      <span>{service.time}</span>
-                    </span>
-                    <span className="flex items-center gap-1 text-emerald-400 font-bold">
-                      <CheckCircle className="w-3.5 h-3.5" /> OEM Spares
-                    </span>
-                  </div>
-
-                  <button
-                    onClick={() => onSelectService(service.title)}
-                    className="w-full py-3 rounded-xl glow-btn-gold text-xs font-bold font-outfit uppercase tracking-wider text-black flex items-center justify-center gap-2"
-                  >
-                    <span>BOOK THIS SERVICE</span>
-                    <ArrowRight className="w-4 h-4 text-black" />
-                  </button>
+                <div className="pt-4 mt-4 border-t border-gray-800/80 flex items-center justify-between text-xs font-semibold">
+                  <span className={isSelected ? 'text-[#D4AF37]' : 'text-gray-400 group-hover:text-white'}>
+                    {isSelected ? 'Currently Inspected' : 'View Details'}
+                  </span>
+                  <ArrowRight className={`w-4 h-4 transition-transform ${isSelected ? 'text-[#D4AF37] translate-x-1' : 'text-gray-500 group-hover:translate-x-1'}`} />
                 </div>
               </div>
             );
