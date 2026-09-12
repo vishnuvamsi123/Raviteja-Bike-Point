@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Calendar, Phone, MessageSquare, ShieldCheck, Award, Wrench, ChevronDown, Sparkles } from 'lucide-react';
+import { Calendar, Phone, MessageSquare, ShieldCheck, Award, Wrench, ChevronDown, Sparkles, AlertCircle } from 'lucide-react';
 
 interface HeroSectionProps {
   onOpenBooking: () => void;
@@ -14,6 +14,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isBikeHovered, setIsBikeHovered] = useState(false);
+  const [has3dImageError, setHas3dImageError] = useState(false);
 
   // Counter State for Statistics
   const [expCount, setExpCount] = useState(0);
@@ -25,10 +26,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   useEffect(() => {
     // Parallax mouse tracker
     const handleMouseMove = (e: MouseEvent) => {
-      const { innerWidth, innerHeight } = window;
-      const x = (e.clientX / innerWidth - 0.5) * 20;
-      const y = (e.clientY / innerHeight - 0.5) * 20;
-      setMousePos({ x, y });
+      try {
+        const { innerWidth, innerHeight } = window;
+        const x = (e.clientX / innerWidth - 0.5) * 20;
+        const y = (e.clientY / innerHeight - 0.5) * 20;
+        setMousePos({ x, y });
+      } catch (err) {}
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -96,6 +99,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               src="./images/ganesha.png"
               alt="Lord Ganesha Emblem"
               className="w-5 h-5 object-contain filter drop-shadow-[0_0_8px_rgba(212,175,55,0.8)]"
+              onError={(e) => {
+                // Fallback Ganesha icon rendering if file missing
+                (e.target as HTMLElement).style.display = 'none';
+              }}
             />
             <span className="font-serif-title text-xs font-bold text-[#F5D77A] tracking-[0.25em] uppercase">
               SRI GANESHAIAH NAMAHA • TRADITION & TRUST SINCE 1992
@@ -139,7 +146,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 "PRECISION FOR EVERY RIDE."
               </h3>
               <p className="text-base sm:text-lg text-gray-300 max-w-xl font-sans leading-relaxed">
-                Professional two-wheeler service, repair, and precision maintenance in Amalapuram under the master craftsmanship of <strong className="text-white font-semibold">Mallula Satyanarayana</strong>.
+                Professional two-wheeler service, repair, and precision maintenance in Amalapuram under the master craftsmanship of <strong className="text-white font-semibold">Mallula Satyanarayana — Owner</strong>.
               </p>
             </div>
 
@@ -194,7 +201,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           </div>
 
-          {/* RIGHT SIDE: Interactive 3D Realistic Modern Motorcycle Render (Cols 8-12) */}
+          {/* RIGHT SIDE: Interactive 3D Realistic Modern Motorcycle Render with Graceful Fallback (Cols 8-12) */}
           <div className="lg:col-span-5 relative flex items-center justify-center mt-6 lg:mt-0">
             
             {/* Soft Red Studio Ambient Halo behind 3D Bike */}
@@ -211,14 +218,33 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               className="relative w-full max-w-lg rounded-3xl overflow-hidden glass-card border border-[#D4AF37]/40 p-2 group shadow-2xl shadow-black/90 cursor-pointer"
             >
               {/* Studio Render Frame */}
-              <div className="relative rounded-2xl overflow-hidden bg-black/90 aspect-[16/10]">
+              <div className="relative rounded-2xl overflow-hidden bg-black/90 aspect-[16/10] flex items-center justify-center">
                 
-                {/* Generated 3D Motorcycle Image */}
-                <img
-                  src="./images/hero_3d_motorcycle.jpg"
-                  alt="Raviteja Bike Point 3D Realistic Modern Motorcycle Render"
-                  className="w-full h-full object-cover object-center transform transition-transform duration-700 group-hover:scale-105"
-                />
+                {!has3dImageError ? (
+                  /* Generated 3D Motorcycle Image */
+                  <img
+                    src="./images/hero_3d_motorcycle.jpg"
+                    alt="Raviteja Bike Point 3D Realistic Modern Motorcycle Render"
+                    onError={() => setHas3dImageError(true)}
+                    className="w-full h-full object-cover object-center transform transition-transform duration-700 group-hover:scale-105"
+                  />
+                ) : (
+                  /* Fallback Hero Vector Visual (Triggers automatically if WebGL/3D asset is unavailable) */
+                  <div className="w-full h-full bg-gradient-to-b from-[#1A0307] to-black p-8 flex flex-col items-center justify-center text-center space-y-3">
+                    <div className="w-20 h-20 rounded-full bg-[#8B0000]/40 border-2 border-[#D4AF37] flex items-center justify-center text-[#D4AF37] shadow-lg shadow-[#8B0000]/50">
+                      <Wrench className="w-10 h-10 animate-pulse" />
+                    </div>
+                    <h4 className="text-xl font-bold font-outfit text-white">
+                      RAVITEJA AUTOMOTIVE STUDIO
+                    </h4>
+                    <p className="text-xs text-gray-300 max-w-xs">
+                      Master motorcycle repair, engine tuning & periodic maintenance in Amalapuram since 1992.
+                    </p>
+                    <span className="text-[10px] font-mono text-[#D4AF37] uppercase tracking-widest bg-[#8B0000]/30 px-3 py-1 rounded-full border border-[#D4AF37]/30">
+                      MALLULA SATYANARAYANA • OWNER
+                    </span>
+                  </div>
+                )}
 
                 {/* Red Rim Lighting Overlay Effect */}
                 <div 
@@ -230,7 +256,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 {/* High-End Automotive Studio Badge */}
                 <div className="absolute top-3 left-3 glass-card px-3 py-1 rounded-full border border-[#D4AF37]/40 text-[10px] font-mono text-[#F5D77A] uppercase tracking-widest flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                  <span>3D AUTOMOTIVE STUDIO RENDER</span>
+                  <span>3D AUTOMOTIVE STUDIO VISUAL</span>
                 </div>
 
                 {/* Interactive Touch / Hover Label */}
